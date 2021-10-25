@@ -14,6 +14,7 @@ class homePage extends StatefulWidget {
 
 class _homePageState extends State<homePage> {
   @override
+
   int page = 0;
   GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
   Widget build(BuildContext context) {
@@ -33,39 +34,85 @@ class _homePageState extends State<homePage> {
     Icon(Icons.account_circle, size: 30),
     ],
     onTap: (index) {
-    setState(() {page = index;
-    if(index==2){
-      setState(() {
-        Account();
-      });
-
-    }
+    setState(() {
+      page = index;
 
     print(page);
     });
     },
     ),
 
-    body: Container(
-
-      child:Account(),)
-    );
-  }
-  Widget Account(){
-
-    return Column(
-        children: [
-          OutlinedButton(onPressed:(){
-            setState(() {
-              AuthenticationHelper().signOut().then((result){
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => login()));
-              });
-            });
-
-          }, child: Text("logout"))
-        ],
+    body: condit(page),
 
     );
   }
-}
+
+
+
+
+   condit(int index){
+     if (index==0){
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+
+            children: [
+
+            Text(
+              "search worker"
+            )
+    ]
+    );
+
+
+    }else if(index==1){
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+           Text("Request"),
+          ]
+      );
+    }else if(index==2){
+       return Column(
+           mainAxisAlignment: MainAxisAlignment.center,
+           crossAxisAlignment: CrossAxisAlignment.center,
+           children: [
+             OutlinedButton(onPressed:(){
+               setState(() {
+                 AuthenticationHelper().signOut().then((result){
+                   Navigator.pushReplacement(context,
+                       MaterialPageRoute(builder: (context) => login()));
+                 });
+               });
+
+             }, child: Text("logout")
+             )
+           ]
+       );
+     }
+  }
+
+// final List<Widget> tabItems = [
+// Widget Request(){
+//
+//   return Column(
+//     children: [
+//       OutlinedButton(onPressed:(){
+//         setState(() {
+//           AuthenticationHelper().signOut().then((result){
+//             Navigator.pushReplacement(context,
+//                 MaterialPageRoute(builder: (context) => login()));
+//           });
+//         });
+//
+//       }, child: Text("logout"))
+//     ],
+//
+//   );
+//
+//
+//
+//   ];
+//
+ }

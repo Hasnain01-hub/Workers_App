@@ -1,9 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+class AuthenticationHelper1{
+  final FirebaseAuth firebaseAuth;
+  //FirebaseAuth instance
+  AuthenticationHelper1(this.firebaseAuth);
+  Stream<User?> get authState => firebaseAuth.idTokenChanges();
+}
 class AuthenticationHelper {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   get user => _auth.currentUser;
+
 
   //SIGN UP METHOD
   Future signUp({required String email, required String password}) async {
