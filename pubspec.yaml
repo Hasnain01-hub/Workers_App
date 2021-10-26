@@ -33,6 +33,7 @@ dependencies:
   firebase_core: ^1.8.0
   cloud_firestore: ^2.5.4
   provider: ^6.0.1
+  flutter_svg: ^0.22.0
 
 
 dev_dependencies:

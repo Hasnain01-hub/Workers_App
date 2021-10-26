@@ -1,9 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:workers_app/authentication.dart';
 import 'package:workers_app/login.dart';
 
-import 'account.dart';
+import 'Profile/Profilemenu.dart';
+import 'Profile/profile_pic.dart';
+
 
 class homePage extends StatefulWidget {
   const homePage({Key? key}) : super(key: key);
@@ -14,7 +18,8 @@ class homePage extends StatefulWidget {
 
 class _homePageState extends State<homePage> {
   @override
-
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  get user => _auth.currentUser;
   int page = 0;
   GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
   Widget build(BuildContext context) {
@@ -74,21 +79,45 @@ class _homePageState extends State<homePage> {
           ]
       );
     }else if(index==2){
-       return Column(
-           mainAxisAlignment: MainAxisAlignment.center,
-           crossAxisAlignment: CrossAxisAlignment.center,
+       return SingleChildScrollView(
+         padding: EdgeInsets.symmetric(vertical: 20),
+         child: Column(
            children: [
-             OutlinedButton(onPressed:(){
-               setState(() {
-                 AuthenticationHelper().signOut().then((result){
-                   Navigator.pushReplacement(context,
-                       MaterialPageRoute(builder: (context) => login()));
-                 });
-               });
+             ProfilePic(),
+             SizedBox(height: 20),
+             ProfileMenu(
+               text: user.email.toString(),
+               icon: "asset/User Icon.svg",
+               press: () => {},
+             ),
+             ProfileMenu(
+               text: "Notifications",
+               icon: "asset/Bell.svg",
+               press: () {},
+             ),
 
-             }, child: Text("logout")
-             )
-           ]
+             // ProfileMenu(
+             //   text: "Help Center",
+             //   icon: "assets/icons/Question mark.svg",
+             //   press: () {},
+             // ),
+             ProfileMenu(
+               text: "Log Out",
+               icon: "asset/Log out.svg",
+               press: () {
+                 setState(() {
+
+                       AuthenticationHelper().signOut().then((result){
+                         Navigator.pushReplacement(context,
+                             MaterialPageRoute(builder: (context) => login()));
+                       });
+
+                 });
+
+               },
+             ),
+           ],
+         ),
        );
      }
   }
@@ -115,4 +144,6 @@ class _homePageState extends State<homePage> {
 //
 //   ];
 //
+
  }
+
