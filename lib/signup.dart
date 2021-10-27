@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workers_app/Ask%20for%20worker/askfWorker.dart';
 import 'package:workers_app/home.dart';
 import 'package:workers_app/login.dart';
 
@@ -39,7 +40,7 @@ class _signupState extends State<signup> {
                 SizedBox(height: 90.0,),
                 Container(
                     alignment: Alignment.topCenter,
-                    child: Image.asset("asset/register.png",width: 260.0,height: 320.0,fit: BoxFit.fitHeight,)),
+                    child: Image.asset("asset/signup.gif",width: 260.0,height: 320.0,fit: BoxFit.fitHeight,)),
                 Text("Register ",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.deepPurple,fontSize: 30.0),),
                 SizedBox(height: 20.0,),
                 Padding(
@@ -131,7 +132,7 @@ class _signupState extends State<signup> {
                         if (result == null) {
 
                           Navigator.pushReplacement(context,
-                              MaterialPageRoute(builder: (context) => homePage()));
+                              MaterialPageRoute(builder: (context) => Askfworker()));
                         } else {
                           print(email.text+""+password.text);
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -165,9 +166,11 @@ class _signupState extends State<signup> {
                   style: ButtonStyle(elevation: MaterialStateProperty.all(0),shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
                   ),
                   onPressed: (){
+setState(() {
+  Navigator.pushReplacement(context,
+      MaterialPageRoute(builder: (context) => login()));
+});
 
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => login()));
                 }, child: Text("login",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20.0),),)
               ],
             ),

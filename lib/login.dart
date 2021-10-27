@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workers_app/Ask%20for%20worker/askfWorker.dart';
 import 'package:workers_app/home.dart';
 import 'package:workers_app/signup.dart';
 
@@ -39,7 +40,7 @@ var res;
                   SizedBox(height: 90.0,),
                    Container(
                      alignment: Alignment.topCenter,
-                       child: Image.asset("asset/login.png",width: 260.0,height: 320.0,)),
+                       child: Image.asset("asset/login.gif",width: 260.0,height: 320.0,)),
 Text("Welcome $name",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.deepPurple,fontSize: 30.0),),
                   SizedBox(height: 20.0,),
                   Padding(
@@ -164,9 +165,11 @@ InkWell(
                     style: ButtonStyle(elevation: MaterialStateProperty.all(0),shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
                     ),
                     onPressed: (){
+setState(() {
+  Navigator.pushReplacement(context,
+      MaterialPageRoute(builder: (context) => signup()));
+});
 
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => signup()));
                   }, child: Text("Register",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20.0),),)
                 ],
               ),

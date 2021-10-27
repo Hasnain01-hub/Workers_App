@@ -44,7 +44,7 @@ class ProfilePic extends StatelessWidget {
                   backgroundColor: Color(0xFFF5F6F9),
                 ),
                 onPressed: () {},
-                child: SvgPicture.asset("asset/Bell.svg"),
+                child: Icon(Icons.account_circle,color: Colors.black54,)
               ),
             ),
           )

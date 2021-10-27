@@ -24,6 +24,12 @@ class _homePageState extends State<homePage> {
   GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Center(child: Text("Workers App",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)),
+      backgroundColor: Colors.deepPurple,
+        elevation: 0.0,
+
+
+      ),
       backgroundColor: Colors.white,
         bottomNavigationBar: CurvedNavigationBar(
           height: 50.0,
