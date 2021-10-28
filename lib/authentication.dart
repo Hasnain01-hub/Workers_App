@@ -28,8 +28,7 @@ class AuthenticationHelper {
               "name": email.split("@")[0],
               "email": email,
               // creating empty "urls" array in FireStore to store Storage urls
-              "urls": [],
-              "mycars": [],
+
               "role": "user",
             })
                 .then((value) => print("User's Document Added"))

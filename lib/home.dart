@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:workers_app/Ask%20for%20worker/Registerform.dart';
 import 'package:workers_app/authentication.dart';
 import 'package:workers_app/login.dart';
 
@@ -79,11 +80,16 @@ class _homePageState extends State<homePage> {
     }else if(index==1){
       return Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
+
           children: [
-           Text("Request"),
+
+            Text(
+                "Request worker"
+            )
           ]
       );
+
     }else if(index==2){
        return SingleChildScrollView(
          padding: EdgeInsets.symmetric(vertical: 20),
@@ -97,9 +103,10 @@ class _homePageState extends State<homePage> {
                press: () => {},
              ),
              ProfileMenu(
-               text: "Notifications",
+               text: "Register for worker",
                icon: "asset/Bell.svg",
-               press: () {},
+               press: () {Navigator.pushReplacement(context,
+                   MaterialPageRoute(builder: (context) => Registerform()));},
              ),
 
              // ProfileMenu(
