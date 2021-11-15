@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:workers_app/home.dart';
+import 'package:workers_app/Home/home.dart';
 class Registerform extends StatefulWidget {
   const Registerform({Key? key}) : super(key: key);
 
@@ -22,6 +22,22 @@ class _RegisterformState extends State<Registerform> {
   TextEditingController Aadhar_No = new TextEditingController();
   TextEditingController Address = new TextEditingController();
   TextEditingController Pin_code = new TextEditingController();
+  static const menuItems = <String>[
+    'Electrician',
+    'Carpenter',
+    'Welding',
+    'Plumber',
+    'Masonry',
+  ];
+  String? btnSelectedVal;
+  final List<DropdownMenuItem<String>> _dropDownMenuItems = menuItems
+      .map(
+        (String value) => DropdownMenuItem<String>(
+      value: value,
+      child: Text(value),
+    ),
+  ).toList();
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(leading: IconButton(
@@ -205,6 +221,26 @@ class _RegisterformState extends State<Registerform> {
                   maxLength: 6,
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.only(left: 28,right: 28),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text('Select Profession',style:TextStyle(color: Colors.grey.shade800)),
+                    SizedBox(width: 10.0,),
+                    DropdownButton<String>(
+                      value: btnSelectedVal,
+                      hint: Text('Choose'),
+                      items: this._dropDownMenuItems,
+                      onChanged: (String? newvalue){
+                        setState(() {
+                          btnSelectedVal =newvalue;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -224,7 +260,7 @@ class _RegisterformState extends State<Registerform> {
         .set({
     "Name": Name.text,
     "Phone": Phone.text,
-    "Work": Work.text,
+    "Work": btnSelectedVal,
     "Address": Address.text,
     "Aadhar": Aadhar_No.text,
     "PinCode": Pin_code.text,
