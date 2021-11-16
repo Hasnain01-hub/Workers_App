@@ -260,6 +260,8 @@ class _RegisterformState extends State<Registerform> {
         .set({
     "Name": Name.text,
     "Phone": Phone.text,
+            "press":"false",
+     "email":user.email,
     "Work": btnSelectedVal,
     "Address": Address.text,
     "Aadhar": Aadhar_No.text,
