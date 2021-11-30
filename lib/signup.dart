@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:workers_app/Ask%20for%20worker/askfWorker.dart';
 import 'package:workers_app/Home/home.dart';
 import 'package:workers_app/login.dart';
 
-import 'authentication.dart';
+
+import 'authentication/firebase_auth_service.dart';
 
 class signup extends StatefulWidget {
 
@@ -126,28 +128,34 @@ class _signupState extends State<signup> {
                       });
 
 
-                      AuthenticationHelper()
-                          .signUp(email: email.text.trim(), password: password.text.trim())
-                          .then((result) {
-                        if (result == null) {
 
-                          Navigator.pushReplacement(context,
-                              MaterialPageRoute(builder: (context) => Askfworker()));
-                        } else {
-                          print(email.text+""+password.text);
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              result,
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ));
-                        }
-                      });
+
+    final authServiceProvider =
+    Provider.of<FirebaseAuthService>(context, listen: false);
+    // Signup the user
+    await authServiceProvider.createUser(
+    context,
+    email.text,
+    password.text,
+      email.text.split("@")[0]
+
+    ).then((firebaseAuth){
+if(firebaseAuth!=null){
+
+  Navigator.pushNamedAndRemoveUntil(
+      context, "/askworker", (route) => false);
+}
+    });
+    // if (authUser.email != null) {
+
+    }
+
+
                       await Future.delayed( Duration(seconds: 1));
 
-                    }
+                    },
 
-                  },
+
                   child:   AnimatedContainer(
                     height: 40,
                     duration: Duration(seconds: 1),

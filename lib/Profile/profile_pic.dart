@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../User.dart';
+
 
 
 
@@ -13,6 +15,7 @@ class ProfilePic extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   get user => _auth.currentUser;
+   UserModel? user1;
   @override
 
   Widget build(BuildContext context) {
@@ -24,9 +27,30 @@ class ProfilePic extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
 
-          CircleAvatar(
-            backgroundImage: AssetImage("asset/u1.png"),
-            radius: 100,
+          user.photoURL != null
+              ? ClipOval(
+            child: Material(
+              elevation: 2.0,
+              shadowColor: Colors.black,
+              color: Colors.grey.shade600,
+              child: Image.network(
+                user.photoURL!,
+                fit: BoxFit.fitHeight,
+              ),
+            ),
+          )
+              : ClipOval(
+            child: Material(
+              // color: CustomColors.firebaseGrey.withOpacity(0.3),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Icon(
+                  Icons.person,
+                  size: 60,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+            ),
           ),
           Positioned(
             right: -16,

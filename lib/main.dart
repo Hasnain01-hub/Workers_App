@@ -1,12 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:workers_app/Ask%20for%20worker/askfWorker.dart';
+import 'package:workers_app/worker/Admin_home.dart';
 import 'package:workers_app/Home/home.dart';
+import 'package:workers_app/authentication/authPage.dart';
+import 'package:workers_app/signup.dart';
 
 
-import 'authentication.dart';
 
+
+import 'authentication/firebase_auth_service.dart';
 import 'login.dart';
 
 Future main() async{
@@ -18,40 +24,43 @@ Future main() async{
 class MyApp extends StatelessWidget {
 
   @override
+
   Widget build(BuildContext context) {
+
     return MultiProvider(
       providers: [
-        Provider<AuthenticationHelper1>(
-          create: (_) => AuthenticationHelper1(FirebaseAuth.instance),
+        Provider<FirebaseAuthService>(create: (_) => FirebaseAuthService()),
+        FutureProvider<Map<String, dynamic>?>(
+          create: (context) async {
+            var user = Provider.of<FirebaseAuthService>(context, listen: false)
+                .currentUser();
+            var userDoc = await FirebaseFirestore.instance
+                .collection("Users")
+                .doc(user!.email)
+                .get();
+            return userDoc.data();
+          },
+          initialData: {},
         ),
-        StreamProvider(
-          create: (context) => context.read<AuthenticationHelper1>().authState, initialData: null,
-        )
       ],
       child: MaterialApp(
-        debugShowCheckedModeBanner: false,
+
+    routes: {
+      "/adminHome": (context) => wokerPage(),
+      "/Register": (context) => signup(),
+      "/login": (context) => login(),
+      "/Home": (context) => homePage(),
+      "/askworker": (context) => Askfworker(),
+    },
+        // debugShowCheckedModeBanner: false,
         title: 'Workers App',
         theme: ThemeData(
 
           primarySwatch: Colors.blue,
         ),
-        home: Authenticate(),
+        home: AuthPage(),
       ),
     );
   }
 }
 
-class Authenticate extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    //Instance to know the authentication state.
-    final firebaseUser = context.watch<User?>();
-
-    if (firebaseUser != null) {
-      //Means that the user is logged in already and hence navigate to HomePage
-      return homePage();
-    }
-    //The user isn't logged in and hence navigate to SignInPage.
-    return login();
-  }
-}

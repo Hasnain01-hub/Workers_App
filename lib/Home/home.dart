@@ -7,7 +7,8 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:provider/provider.dart';
 import 'package:workers_app/Ask%20for%20worker/Registerform.dart';
-import 'package:workers_app/authentication.dart';
+import 'package:workers_app/authentication/firebase_auth_service.dart';
+
 import 'package:workers_app/login.dart';
 
 import '../Profile/Profilemenu.dart';
@@ -23,6 +24,16 @@ class homePage extends StatefulWidget {
 
 class _homePageState extends State<homePage> {
   @override
+  // void initState() {
+  //   super.initState();
+  //   getDriversList().then((results) {
+  //     // setState(() {
+  //       querySnapshot = results;
+  //     // });
+  //   });
+  // }
+
+  QuerySnapshot? querySnapshot;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   get user => _auth.currentUser;
   int page = 0;
@@ -70,11 +81,6 @@ class _homePageState extends State<homePage> {
   }
 
 
-
-  // Future loadGroups() async {
-  //   return await FirebaseFirestore.instance
-  //       .collection("Worker").get();
-  // }
    condit(int index) {
      if (index == 0) {
        return Column(
@@ -85,6 +91,7 @@ class _homePageState extends State<homePage> {
            ),
            StreamBuilder<QuerySnapshot <Map<String,dynamic>>>(
              stream: FirebaseFirestore.instance.collection('Worker').snapshots(),
+
              builder: (context, snapshot) {
                if (!snapshot.hasData) {
                  return Center(
@@ -103,7 +110,39 @@ class _homePageState extends State<homePage> {
                    scrollDirection: Axis.vertical,
                    itemBuilder: (BuildContext context, int index) {
                      var rand=uuid.v1();
+                     Map<String, dynamic>? setServices;
                      var temp = snapshot.data!.docs[index].data();
+
+
+                     FirebaseFirestore.instance.collection("Request").get().then(
+                           (value) {
+                         value.docs.forEach(
+                               (element) {
+                                 setServices=element.data();
+
+                             print(element.data());
+                           },
+                         );
+                       },
+                     );
+     // final CollectionReference users =
+     // FirebaseFirestore.instance.collection('Request');
+     // // users.getDocuments();
+     // //   if (event.documents.isNotEmpty) {
+     // //     Map<String, dynamic> documentData = event.documents.single.data; //if it is a single document
+     // //   }
+     // // });
+     //                 Future<void> getData() async {
+     //                   // Get docs from collection reference
+     //                   QuerySnapshot querySnapshot = await users.get();
+     //
+     //                   // Get data from docs and convert map to List
+     //                   final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
+     //
+     //                   print(allData);
+     //                 }
+
+
                      return Container(
                        margin: EdgeInsets.only( top: 10, bottom: 10),
                        decoration: BoxDecoration(
@@ -222,6 +261,7 @@ class _homePageState extends State<homePage> {
                                                 "email": temp["email"],
                                                 "useremail":user.email,
                                                 "Phone": temp["Phone"],
+                                                "accept":"Reject",
                                                 "Work": temp["Work"],
                                                 "Pin Code": temp["PinCode"],
                                                 "id":rand,
@@ -240,14 +280,14 @@ class _homePageState extends State<homePage> {
                                                 //     .doc(temp['email']).update({"press":"false"});}
                                              // null
                                               }
-
-
                      });
 
                                         }, child:temp["press"]=="true"? Text("Requested",style: TextStyle(color:Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 18),):Text("Request",style: TextStyle(color:Colors.white,fontWeight: FontWeight.bold,fontSize: 18),) ,
                                       ),
                                     ),
                                     ),
+
+
 
                                        if(temp["press"]=="true")...[
                                         Padding(
@@ -290,7 +330,7 @@ class _homePageState extends State<homePage> {
                    );
                } else {
                  return Center(
-                   child: CircularProgressIndicator(),
+                   child: Center(child: Text("No Worker Record")),
                  );
                }
 
@@ -332,138 +372,150 @@ class _homePageState extends State<homePage> {
                       scrollDirection: Axis.vertical,
                       itemBuilder: (BuildContext context, int index) {
                         var temp = snapshot.data!.docs[index].data();
-
+                        // var da=querySnapshot!.docs[index].data();
                         return Container(
                           margin: EdgeInsets.only( top: 10, bottom: 10),
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 2.5,
-                                blurRadius: 6,
-                                offset: Offset(0, 3), // changes position of shadow
-                              ),
-                            ],
-                          ),
+
+
                           child: Material(
                               elevation: 1.5,
 
                               clipBehavior: Clip.antiAlias,
                               borderRadius: BorderRadius.circular(10),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  // mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                    if (temp["useremail"] == user.email) ...[
-                                      Padding(
-                                        padding:EdgeInsets.only(left: 16),
-                                        child: Align(
-                                          alignment: Alignment.topLeft,
-                                          child: RichText(
-                                            text: TextSpan(
-                                                text: "Name: ",
-                                                style: TextStyle(
-                                                  color: Theme
-                                                      .of(context)
-                                                      .primaryColorDark,
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w700,
-                                                ),
-                                                children: <TextSpan>[
-                                                  TextSpan(
-                                                      text: temp["Name"]
-                                                          .toUpperCase()),
-                                                ]),
+                              child: Column(
+                                // mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                  if (temp["useremail"] == user.email &&temp["accept"]=="Accept") ...[
+                                    Padding(
+                                      padding:EdgeInsets.only(left: 16),
+                                      child: Align(
+                                        alignment: Alignment.topLeft,
+                                        child: RichText(
+                                          text: TextSpan(
+                                              text: "Name: ",
+                                              style: TextStyle(
+                                                color: Theme
+                                                    .of(context)
+                                                    .primaryColorDark,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                              children: <TextSpan>[
+                                                TextSpan(
+                                                    text: temp["Name"]
+                                                        .toUpperCase()),
+                                              ]),
 
-                                          ),
                                         ),
                                       ),
-                                      Padding(
-                                        padding:EdgeInsets.only(left: 16,top: 12),
-                                        child: Align(
-                                          alignment: Alignment.topLeft,
-                                          child: RichText(
-                                            text: TextSpan(
-                                                text: "Profession: ",
-                                                style: TextStyle(
-                                                  color: Theme
-                                                      .of(context)
-                                                      .primaryColorDark,
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w700,
-                                                ),
-                                                children: <TextSpan>[
-                                                  TextSpan(
-                                                      text: temp["Work"]
-                                                          .toUpperCase()),
-                                                ]),
+                                    ),
+                                    Padding(
+                                      padding:EdgeInsets.only(left: 16,top: 12),
+                                      child: Align(
+                                        alignment: Alignment.topLeft,
+                                        child: RichText(
+                                          text: TextSpan(
+                                              text: "Profession: ",
+                                              style: TextStyle(
+                                                color: Theme
+                                                    .of(context)
+                                                    .primaryColorDark,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                              children: <TextSpan>[
+                                                TextSpan(
+                                                    text: temp["Work"]
+                                                        .toUpperCase()),
+                                              ]),
 
-                                          ),
                                         ),
                                       ),
-                                      Padding(
-                                        padding:EdgeInsets.only(left: 16,top: 12),
-                                        child: Align(
-                                          alignment: Alignment.topLeft,
-                                          child: RichText(
-                                            text: TextSpan(
-                                                text: "Pin Code: ",
-                                                style: TextStyle(
-                                                  color: Theme
-                                                      .of(context)
-                                                      .primaryColorDark,
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w700,
-                                                ),
-                                                children: <TextSpan>[
-                                                  TextSpan(
-                                                      text: temp["Pin Code"]
-                                                          .toUpperCase()),
-                                                ]),
+                                    ),
+                                    Padding(
+                                      padding:EdgeInsets.only(left: 16,top: 12),
+                                      child: Align(
+                                        alignment: Alignment.topLeft,
+                                        child: RichText(
+                                          text: TextSpan(
+                                              text: "Pin Code: ",
+                                              style: TextStyle(
+                                                color: Theme
+                                                    .of(context)
+                                                    .primaryColorDark,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                              children: <TextSpan>[
+                                                TextSpan(
+                                                    text: temp["Pin Code"]
+                                                        .toUpperCase()),
+                                              ]),
 
-                                          ),
                                         ),
                                       ),
+                                    ),
+                                    Padding(
+                                      padding:EdgeInsets.only(left: 16,top: 12),
+                                      child: Align(
+                                        alignment: Alignment.topLeft,
+                                        child: RichText(
+                                          text: TextSpan(
+                                              text: "Phone No: ",
+                                              style: TextStyle(
+                                                color: Theme
+                                                    .of(context)
+                                                    .primaryColorDark,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                              children: <TextSpan>[
+                                                TextSpan(
+                                                    text: temp["Phone"]
+                                                        .toUpperCase()),
+                                              ]),
 
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
+                                        ),
+                                      ),
+                                    ),
 
-                                          // if(press==true)...[
-                                            Padding(
-                                              padding:EdgeInsets.only(right: 19,top: 12),
-                                              child: Align(
-                                                alignment: Alignment.bottomRight,
-                                                child: ElevatedButton(
-                                                  style: ButtonStyle( backgroundColor:MaterialStateProperty.all<Color>(Colors.redAccent.shade700),shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                      RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.circular(7.0),
-                                                          side: BorderSide(color: Colors.white24)
-                                                      )),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
 
-                                                  ), onPressed: () {
-                                                  setState(() {
-                                                    // press=false;
-                                                    FirebaseFirestore.instance
-                                                        .collection("Request")
-                                                        .doc(temp['id']).delete();
-                                                    FirebaseFirestore.instance
-                                                        .collection("Worker")
-                                                        .doc(temp['email']).update({"press":"false"});
-                                                  });
-                                                }, child: Text("Delete",style: TextStyle(color:Colors.white,fontWeight: FontWeight.bold,fontSize: 18),) ,
-                                                ),
+                                        // if(press==true)...[
+                                          Padding(
+                                            padding:EdgeInsets.only(right: 19,top: 12),
+                                            child: Align(
+                                              alignment: Alignment.bottomRight,
+                                              child: ElevatedButton(
+                                                style: ButtonStyle( backgroundColor:MaterialStateProperty.all<Color>(Colors.redAccent.shade700),shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                    RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(7.0),
+                                                        side: BorderSide(color: Colors.white24)
+                                                    )),
+
+                                                ), onPressed: () {
+                                                setState(() {
+                                                  // press=false;
+                                                  FirebaseFirestore.instance
+                                                      .collection("Request")
+                                                      .doc(temp['id']).delete();
+                                                  FirebaseFirestore.instance
+                                                      .collection("Worker")
+                                                      .doc(temp['email']).update({"press":"false"});
+                                                });
+                                              }, child: Text("Delete",style: TextStyle(color:Colors.white,fontWeight: FontWeight.bold,fontSize: 18),) ,
                                               ),
                                             ),
-                                          ]
-                                          // }
-                                        // ],
-                                      )
+                                          ),
+                                        ]
+                                        // }
+                                      // ],
+                                    )
 ]
-                                    ]
+                                  ]
 
-                                ),
                               )
                           ),
                         );
@@ -510,7 +562,7 @@ class _homePageState extends State<homePage> {
                press: () {
                  setState(() {
 
-                       AuthenticationHelper().signOut().then((result){
+                   FirebaseAuthService().signOutUser().then((result){
                          Navigator.pushReplacement(context,
                              MaterialPageRoute(builder: (context) => login()));
                        });

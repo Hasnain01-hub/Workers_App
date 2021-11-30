@@ -1,9 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:workers_app/worker/Admin_home.dart';
 import 'package:workers_app/Ask%20for%20worker/askfWorker.dart';
 import 'package:workers_app/Home/home.dart';
 import 'package:workers_app/signup.dart';
 
-import 'authentication.dart';
+
+import 'User.dart';
+import 'authentication/firebase_auth_service.dart';
 
 class login extends StatefulWidget {
 
@@ -16,11 +22,20 @@ class login extends StatefulWidget {
 class _loginState extends State<login> {
   var name="";
 var res;
+var value;
   bool pre=false;
   bool pressed =true;
-  TextEditingController email = new TextEditingController();
-  TextEditingController password = new TextEditingController();
+  UserModel? user2;
+  TextEditingController? email =  TextEditingController();
+  TextEditingController? password =  TextEditingController();
   final formKey = GlobalKey<FormState>();
+@override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    email!.dispose();
+    password!.dispose();
+  }
   @override
 
   Widget build(BuildContext context) {
@@ -123,30 +138,62 @@ InkWell(
       print("pressed");
 
 
-      AuthenticationHelper()
-          .signIn(email: email.text.trim(), password: password.text.trim())
-          .then((result) {
-            res=result;
-        if (result == null) {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => homePage()));
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(
-              result,
-              style: TextStyle(fontSize: 16),
-            ),
-          ));
-        }
-      });
-      setState(() {
-        res!=null ?pre = false:pre=true;
-      });
-      await Future.delayed( Duration(seconds: 1));
+
+
+          final authServiceProvider =
+          Provider.of<FirebaseAuthService>(context, listen: false);
+
+          // Login the user
+          var authUser = await authServiceProvider.signInWithEmailPassword(
+              email!.text, password!.text);
+
+          if (authUser.email != null) {
+            var role;
+            final CollectionReference users =
+            FirebaseFirestore.instance.collection('Users');
+            users.doc(email.toString()).get().then(
+
+                    (DocumentSnapshot documentSnapshot) async {
+                  final newPet = (documentSnapshot.data() as Map<String,
+                      dynamic>);
+                  print(newPet["role"]);
+                  if (!documentSnapshot.exists) {
+                    role = newPet["role"];
+                    Navigator.pushNamed(context, "/Home");
+                  } else if (newPet["role"]=="Worker") {
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => wokerPage(),
+                        ));
+                  } else {
+                    Navigator.pushNamed(context, "/Home");
+                    // Fluttertoast.showToast(msg: "Sign in successful!");
+                  }
+
+                });
+
+          }else{
+            SnackBar(
+                content: const Text('Failed to loginIn'),
+                action: SnackBarAction(
+                  label: 'Register First!',
+                  onPressed: () {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, "/Register", (route) => false);
+                    // Some code to undo the change.
+                  },
+                ));
+          }
 
     }
+      // setState(() {
+        res!=null ?pre = false:pre=true;
+      // });
+      await Future.delayed( Duration(seconds: 1));
 
-  },
+    },
+
+
   child:   AnimatedContainer(
     height: 40,
     duration: Duration(seconds: 1),
@@ -160,6 +207,39 @@ InkWell(
     ),
   ),
 ),
+                  SizedBox(height:5.0),
+                  InkWell(
+                    onTap: () async {
+                      final authServiceProvider =
+                      Provider.of<FirebaseAuthService>(context, listen: false);
+
+                      // Login the user
+                     await authServiceProvider.signInWithGoogle(context);
+                      // if (user != null) {
+                      //   Navigator.of(context).pushReplacement(
+                      //     MaterialPageRoute(
+                      //       builder: (context) => homePage(
+                      //
+                      //       ),
+                      //     ),
+                      //   );
+                      // }
+                    },
+                    child: Ink(
+                      color: Color(0xFF397AF3),
+                      child: Padding(
+                        padding: EdgeInsets.all(6),
+                        child: Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Icon(Icons.android), // <-- Use 'Image.asset(...)' here
+                            SizedBox(width: 12),
+                            Text('Sign in with Google'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                   SizedBox(height:10.0),
                   OutlinedButton(
                     style: ButtonStyle(elevation: MaterialStateProperty.all(0),shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
@@ -171,6 +251,7 @@ setState(() {
 });
 
                   }, child: Text("Register",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20.0),),)
+
                 ],
               ),
             ),
