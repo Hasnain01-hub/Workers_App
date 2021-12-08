@@ -266,6 +266,7 @@ class _RegisterformState extends State<Registerform> {
     "Address": Address.text,
     "Aadhar": Aadhar_No.text,
     "PinCode": Pin_code.text,
+            "status":"free",
     "role": "Worker",
     }).then((value) => print("User's Document Added"))
         .catchError((error) => print(

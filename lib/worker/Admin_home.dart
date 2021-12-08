@@ -11,8 +11,10 @@ import 'package:workers_app/authentication/firebase_auth_service.dart';
 
 import 'package:workers_app/login.dart';
 
-import '../Profile/Profilemenu.dart';
-import '../Profile/profile_pic.dart';
+import 'Profile/Profilemenu.dart';
+import 'Profile/profile_pic.dart';
+
+
 
 
 class wokerPage extends StatefulWidget {
@@ -23,7 +25,32 @@ class wokerPage extends StatefulWidget {
 }
 
 class _wokerPageState extends State<wokerPage> {
+  late List<bool> isSelected;
+
   @override
+  void initState() {
+    final CollectionReference users =
+    FirebaseFirestore.instance.collection('Worker');
+    users.doc(user.email).get().then(
+
+            (DocumentSnapshot documentSnapshot) async {
+          final newPet = (documentSnapshot.data() as Map<String,
+              dynamic>);
+          print(newPet["status"]);
+          if (newPet["status"]=="free") {
+            isSelected = [true, false];
+          } else {
+            isSelected = [false, true];
+            // Fluttertoast.showToast(msg: "Sign in successful!");
+          }
+
+            });
+    // isSelected = [true, false];
+    super.initState();
+  }
+
+  @override
+
   // void initState() {
   //   super.initState();
   //   getDriversList().then((results) {
@@ -202,6 +229,29 @@ class _wokerPageState extends State<wokerPage> {
                                                 children: <TextSpan>[
                                                   TextSpan(
                                                       text: temp["PinCode"]
+                                                          .toUpperCase()),
+                                                ]),
+
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:EdgeInsets.only(left: 16,top: 12),
+                                        child: Align(
+                                          alignment: Alignment.topLeft,
+                                          child: RichText(
+                                            text: TextSpan(
+                                                text: "Status: ",
+                                                style: TextStyle(
+                                                  color: Theme
+                                                      .of(context)
+                                                      .primaryColorDark,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                                children: <TextSpan>[
+                                                  TextSpan(
+                                                      text: temp["status"]
                                                           .toUpperCase()),
                                                 ]),
 
@@ -572,6 +622,59 @@ class _wokerPageState extends State<wokerPage> {
           children: [
             ProfilePic(),
             SizedBox(height: 20),
+
+            Row(
+
+              children: [
+                SizedBox(width: 20),
+                Text("Status: ",style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),),
+                SizedBox(width: 16),
+                ToggleButtons(
+                  borderColor: Colors.black,
+                  fillColor: Colors.grey,
+                  borderWidth: 2,
+                  selectedBorderColor: Colors.black,
+                  selectedColor: Colors.white,
+                  borderRadius: BorderRadius.circular(6),
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Text(
+                        'Free',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Text(
+                        'Busy',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ],
+                  onPressed: (int index) {
+                    setState(() {
+                      for (int i = 0; i < isSelected.length; i++) {
+                        isSelected[i] = i == index;
+                      }
+
+                      if(index==0){
+                        FirebaseFirestore.instance
+                            .collection("Worker")
+                            .doc(user.email).update({"status":"free"});
+
+                      }else{
+                        FirebaseFirestore.instance
+                            .collection("Worker")
+                            .doc(user.email).update({"status":"busy"});
+
+                      }
+                    });
+                  },
+                  isSelected: isSelected,
+                ),
+              ],
+            ),
             ProfileMenu(
               text: user.email.toString(),
               icon: "asset/User Icon.svg",

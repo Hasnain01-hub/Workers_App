@@ -24,22 +24,38 @@ class homePage extends StatefulWidget {
 
 class _homePageState extends State<homePage> {
   @override
-  // void initState() {
-  //   super.initState();
-  //   getDriversList().then((results) {
-  //     // setState(() {
-  //       querySnapshot = results;
-  //     // });
-  //   });
-  // }
 
+//   final CollectionReference users =
+//   FirebaseFirestore.instance.collection('Request');
+//
+//   var setServices;
+//
+//   void initState()  {
+//     super.initState();
+//     fun();
+//   }
+// //
+//
+//  void fun() async{
+//   final CollectionReference users =
+//   FirebaseFirestore.instance.collection('Request');
+//
+//
+//   // Future.delayed( Duration.zero, () async {
+//   // Get docs from collection reference
+//  await users.get().then((QuerySnapshot querySnapshot)async{
+//   setServices  = querySnapshot.docs.map((doc) => doc.data()).toList();
+//
+//   print(setServices);
+//   print("::::::::::::::type");
+//   print(setServices[0]["useremail"]);
+// });
+// }
   QuerySnapshot? querySnapshot;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   get user => _auth.currentUser;
   int page = 0;
-  // var id= customAlphabet('456798123',2);
-  // var rng = new Random();
-  // var rand=id+rng.nextInt(1000);
+
   var uuid = Uuid();
 
   bool press=false;
@@ -110,37 +126,38 @@ class _homePageState extends State<homePage> {
                    scrollDirection: Axis.vertical,
                    itemBuilder: (BuildContext context, int index) {
                      var rand=uuid.v1();
-                     Map<String, dynamic>? setServices;
+                     // Map<String, dynamic>? setServices;
                      var temp = snapshot.data!.docs[index].data();
+                     //
+                     //
+                     // FirebaseFirestore.instance.collection("Request").get().then(
+                     //       (value) {
+                     //     value.docs.forEach(
+                     //           (element) {
+                     //             setServices=element.data();
+                     //
+                     //         print(element.data());
+                     //       },
+                     //     );
+                     //   },
+                     // );
+     final CollectionReference users =
+     FirebaseFirestore.instance.collection('Request');
 
+                     var setServices;
+                     // Future.delayed( Duration.zero, () async {
+                       // Get docs from collection reference
+                          users.get().then((QuerySnapshot querySnapshot)async{
+                         setServices  = querySnapshot.docs.map((doc) => doc.data()).toList();
 
-                     FirebaseFirestore.instance.collection("Request").get().then(
-                           (value) {
-                         value.docs.forEach(
-                               (element) {
-                                 setServices=element.data();
+                         print(setServices);
+                         print("::::::::::::::type");
+                         print(setServices[index]["useremail"]);
+                       });
 
-                             print(element.data());
-                           },
-                         );
-                       },
-                     );
-     // final CollectionReference users =
-     // FirebaseFirestore.instance.collection('Request');
-     // // users.getDocuments();
-     // //   if (event.documents.isNotEmpty) {
-     // //     Map<String, dynamic> documentData = event.documents.single.data; //if it is a single document
-     // //   }
-     // // });
-     //                 Future<void> getData() async {
-     //                   // Get docs from collection reference
-     //                   QuerySnapshot querySnapshot = await users.get();
-     //
-     //                   // Get data from docs and convert map to List
-     //                   final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
-     //
-     //                   print(allData);
-     //                 }
+                       // Get data from docs and convert map to List
+
+                     // });
 
 
                      return Container(
@@ -234,62 +251,87 @@ class _homePageState extends State<homePage> {
                                        ),
                                      ),
                                    ),
+                                   Padding(
+                                     padding:EdgeInsets.only(left: 16,top: 12),
+                                     child: Align(
+                                       alignment: Alignment.topLeft,
+                                       child: RichText(
+                                         text: TextSpan(
+                                             text: "Status: ",
+                                             style: TextStyle(
+                                               color: Theme
+                                                   .of(context)
+                                                   .primaryColorDark,
+                                               fontSize: 15,
+                                               fontWeight: FontWeight.w700,
+                                             ),
+                                             children: <TextSpan>[
+                                               TextSpan(
+                                                   text: temp["status"]
+                                                       .toUpperCase()),
+                                             ]),
 
+                                       ),
+                                     ),
+                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                    Padding(
+                                      // setServices?.map((dox)=>{
+
+                                     Padding(
                                       padding:EdgeInsets.only(right: 19,top: 12),
                                       child: Align(
                                         alignment: Alignment.bottomRight,
                                         child: ElevatedButton(
 
-                                          style: ButtonStyle( backgroundColor:temp["press"]=="true"?MaterialStateProperty.all<Color>(Colors.white):MaterialStateProperty.all<Color>(Colors.deepPurple),shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                          style: ButtonStyle( backgroundColor:(setServices?[0]["useremail"]==user.email && setServices?[0]["email"]==temp["email"])?MaterialStateProperty.all<Color>(Colors.white):MaterialStateProperty.all<Color>(Colors.deepPurple),shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                               RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(7.0),
+                                                  borderRadius: BorderRadius.circular(8.0),
                                                   side: BorderSide(color: Colors.white24)
                                               )),
 
                                         ), onPressed: () {
+                                          // print(setServices?[0]["useremail"]);
                                             setState(() {
-                                              if(temp["press"]=="false"){
-                                              press=true;
-                                              FirebaseFirestore.instance
-                                                  .collection("Request")
-                                                  .doc(rand)
-                                                  .set({
-                                                "email": temp["email"],
-                                                "useremail":user.email,
-                                                "Phone": temp["Phone"],
-                                                "accept":"Reject",
-                                                "Work": temp["Work"],
-                                                "Pin Code": temp["PinCode"],
-                                                "id":rand,
-                                                "Name": temp["Name"],
-                                                // "PinCode": Pin_code.text,
-                                                // "role": "Worker",
-                                              }).then((value) => print("User's Document Added"))
-                                                  .catchError((error) => print(
-                                                  "Failed to add user: $error"));
-                     FirebaseFirestore.instance
-                         .collection("Worker")
-                         .doc(temp['email']).update({"press":"true","id":rand});}
-                                              else {
+                                              // if((setServices?[index]["useremail"]!=user.email && setServices?[index]["email"]!=temp["email"])) {
+
+                                                FirebaseFirestore.instance
+                                                    .collection("Request")
+                                                    .doc(rand)
+                                                    .set({
+                                                  "email": temp["email"],
+                                                  "useremail": user.email,
+                                                  "Phone": temp["Phone"],
+                                                  "accept": "Reject",
+                                                  "Work": temp["Work"],
+                                                  "Pin Code": temp["PinCode"],
+                                                  "id": rand,
+                                                  "Name": temp["Name"],
+                                                  // "PinCode": Pin_code.text,
+                                                  // "role": "Worker",
+                                                }).then((value) => print(
+                                                    "User's Document Added"))
+                                                    .catchError((error) =>
+                                                    print(
+                                                        "Failed to add user: $error"));
                                                 // FirebaseFirestore.instance
                                                 //     .collection("Worker")
-                                                //     .doc(temp['email']).update({"press":"false"});}
-                                             // null
-                                              }
+                                                //     .doc(temp['email']).update({"press":"true","id":rand});
+                                                //                          }
+
                      });
 
-                                        }, child:temp["press"]=="true"? Text("Requested",style: TextStyle(color:Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 18),):Text("Request",style: TextStyle(color:Colors.white,fontWeight: FontWeight.bold,fontSize: 18),) ,
-                                      ),
+                                        }, child:setServices?[0]["useremail"]==user.email && setServices?[0]["email"]==temp["email"]? Text("Requested",style: TextStyle(color:Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 18),):Text("Request",style: TextStyle(color:Colors.white,fontWeight: FontWeight.bold,fontSize: 18),) ,
+
+                                        ),
                                     ),
                                     ),
 
 
 
-                                       if(temp["press"]=="true")...[
+                                       if(setServices?[0]["useremail"]==user.email && setServices?[0]["email"]==temp["email"])...[
+
                                         Padding(
                                         padding:EdgeInsets.only(right: 19,top: 12),
                                         child: Align(
@@ -307,16 +349,18 @@ class _homePageState extends State<homePage> {
                                               FirebaseFirestore.instance
                                                   .collection("Request")
                                                   .doc(temp['id']).delete();
-                                              FirebaseFirestore.instance
-                                                  .collection("Worker")
-                                                  .doc(temp['email']).update({"press":"false"});
+                                              // FirebaseFirestore.instance
+                                              //     .collection("Worker")
+                                              //     .doc(temp['email']).update({"press":"false"});
                                             });
                                           }, child: Text("Delete",style: TextStyle(color:Colors.white,fontWeight: FontWeight.bold,fontSize: 18),) ,
                                           ),
                                         ),
                                       ),
                    ]
+
                    // }
+                   //                    }),
                                   ],
                                   )
 
