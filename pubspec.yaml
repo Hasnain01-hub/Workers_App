@@ -37,11 +37,19 @@ dependencies:
   uuid: ^3.0.5
   google_sign_in: ^5.1.0
   fluttertoast: ^8.0.7
+  flutter_native_splash: ^1.2.3
+  
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_native_splash:
+#  color: "#fff"
+  image: asset/Launch.png
+  android: true
+  ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -18,7 +18,46 @@ import 'login.dart';
 Future main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(Main());
+}
+class Main extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: SplashScreen()); // define it once at root level.
+  }
+}
+class SplashScreen extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return SplashScreenState();
+  }
+}
+
+class SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(seconds: 4), () {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MyApp(),
+          ));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: Scaffold(
+
+        // backgroundColor: Colors.red,
+        body: Image.asset("asset/Launch.png",fit: BoxFit.cover,alignment: Alignment.center,repeat: ImageRepeat.noRepeat,),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -28,6 +67,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return MultiProvider(
+
       providers: [
         Provider<FirebaseAuthService>(create: (_) => FirebaseAuthService()),
         FutureProvider<Map<String, dynamic>?>(
@@ -44,7 +84,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-
+        
     routes: {
       "/adminHome": (context) => wokerPage(),
       "/Register": (context) => signup(),
