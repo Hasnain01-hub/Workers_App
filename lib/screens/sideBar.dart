@@ -83,7 +83,7 @@ class _SideDrawerState extends State<SideDrawer> {
                 launch(tc);
               },
               child: Text(
-                "Terms & Conditions UK",
+                "Terms & Conditions",
                 style: TextStyle(color: Colors.white, fontSize: 12),
               ),
             ),
