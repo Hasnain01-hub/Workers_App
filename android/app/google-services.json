@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "856711366235",
+    "project_id": "workersapp-d922c",
+    "storage_bucket": "workersapp-d922c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:856711366235:android:ff5b572c6fc28cda5b617e",
+        "android_client_info": {
+          "package_name": "com.official.new_workers_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "856711366235-ctlcp49ijortc46ki4rvc6i0uf34pu2p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.official.new_workers_app",
+            "certificate_hash": "20c379568fc1d611b2732bb95845c3ea78415f8f"
+          }
+        },
+        {
+          "client_id": "856711366235-qr9roq36l4m69bo1uhepjchv5oib0u37.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_-iAmgi9yLl7wPFGklnfNy4oq9nz1Ldw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "856711366235-qr9roq36l4m69bo1uhepjchv5oib0u37.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "856711366235-ctfuf7l10tpkk56snfcum67if50b8p9v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.official.newWorkersApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
