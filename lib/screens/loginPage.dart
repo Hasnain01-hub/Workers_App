@@ -132,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                       Container(
                         margin: EdgeInsets.only(top: 10, bottom: 120),
                         child: Text(
-                          "Powered By hassu",
+                          "Powered By Om",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: _headingColor,

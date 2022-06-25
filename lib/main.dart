@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:new_workers_app/screens/Complete_profile.dart';
 import 'package:new_workers_app/screens/homepage.dart';
 import 'package:new_workers_app/screens/loginPage.dart';
 import 'package:new_workers_app/screens/myProfileScreen.dart';
@@ -59,6 +60,7 @@ class MyApp extends StatelessWidget {
         routes: {
           "/home": (context) => HomePage(),
           "/auth": (context) => LoginPage(),
+          // "/completeWorkerProfile": (context) => Complete_profile(),
           "/setProfile": (context) => SetProfilePage(),
           "/myProfile": (context) => MyProfileScreen(),
         },

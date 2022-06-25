@@ -8,6 +8,7 @@ abstract class AuthService {
   Future<UserModel> createUser(
     BuildContext context,
     String email,
+    
     String password,
     String displayName,
   );

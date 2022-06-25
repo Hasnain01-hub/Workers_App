@@ -1,5 +1,7 @@
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:new_workers_app/screens/Complete_profile.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:new_workers_app/authentication/firebase_auth_service.dart';
@@ -12,10 +14,10 @@ class NavDrawer extends StatefulWidget {
 
 class _NavDrawerState extends State<NavDrawer> {
   @override
-  void initState() {
-    // isBroker = false;
-    super.initState();
-  }
+  // void initState() {
+  //   // isBroker = false;
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,11 @@ class DrawerLabel extends StatefulWidget {
   final Icon icon;
   final void Function() onTap;
   final String? email;
-  DrawerLabel({required this.text, required this.icon, required this.onTap, this.email});
+  DrawerLabel(
+      {required this.text,
+      required this.icon,
+      required this.onTap,
+      this.email});
 
   @override
   _DrawerLabelState createState() => _DrawerLabelState();
@@ -47,7 +53,10 @@ class _DrawerLabelState extends State<DrawerLabel> {
             leading: widget.icon,
             title: Text(
               widget.text,
-              style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w700),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700),
             ),
           ),
         ],
@@ -64,6 +73,50 @@ class SideDrawer extends StatefulWidget {
 }
 
 class _SideDrawerState extends State<SideDrawer> {
+  @override
+  var setdata;
+  var email;
+  var status;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  get user1 => _auth.currentUser;
+  void initState() {
+    final CollectionReference users =
+        FirebaseFirestore.instance.collection('Users');
+    users
+        .doc(user1?.email)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) async {
+      final newPet = (documentSnapshot.data() as Map<String, dynamic>);
+      print(newPet["isWorker"]);
+      setState(() {
+        setdata = newPet["isWorker"];
+        email = newPet["email"];
+      });
+
+      
+      // if (newPet["status"]=="free") {
+      //   isSelected = [true, false];
+      // } else {
+      //   isSelected = [false, true];
+      //   // Fluttertoast.showToast(msg: "Sign in successful!");
+      // }
+    });
+    final CollectionReference workers =
+        FirebaseFirestore.instance.collection('Worker');
+    workers
+        .doc(user1?.email)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) async {
+      final data = (documentSnapshot.data() as Map<String, dynamic>);
+      print(data["status"]);
+      setState(() {
+        
+        status = data["status"];
+      });
+      });
+    super.initState();
+  }
+
   Widget copyrightWidget() {
     return Column(
       children: [
@@ -110,7 +163,8 @@ class _SideDrawerState extends State<SideDrawer> {
                     image: DecorationImage(
                       fit: BoxFit.cover,
                       image: NetworkImage(
-                        user.photoUrl ?? "https://cdn.pixabay.com/photo/2016/04/01/10/11/avatar-1299805_960_720.png",
+                        user.photoUrl ??
+                            "https://cdn.pixabay.com/photo/2016/04/01/10/11/avatar-1299805_960_720.png",
                       ),
                     ),
                   ),
@@ -170,7 +224,28 @@ class _SideDrawerState extends State<SideDrawer> {
               },
             ),
             // ignore: unrelated_type_equality_checks
+            (status!="100"?
+            ((setdata == true )
 
+                ? DrawerLabel(
+                    icon: Icon(
+                      Icons.work,
+                      color: Colors.white,
+                    ),
+                    text: "Complete Workers Profile",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                               Complete_profile(email: email),
+                          // Pass the arguments as part of the RouteSettings. The
+                          // DetailScreen reads the arguments from these settings.
+                        ),
+                      );
+                    },
+                  )
+                : SizedBox()):SizedBox()),
             user != null && widget.worker
                 ? DrawerLabel(
                     icon: Icon(
@@ -224,18 +299,23 @@ class _SideDrawerState extends State<SideDrawer> {
                                 content: Text("Do you really want to logout ?"),
                                 actions: [
                                   Padding(
-                                    padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                                    padding: const EdgeInsets.fromLTRB(
+                                        15, 10, 15, 10),
                                     // ignore: deprecated_member_use
                                     child: FlatButton(
                                       child: Text("Yes"),
                                       onPressed: () {
                                         authUser.signOutUser();
-                                        Navigator.pushNamedAndRemoveUntil(context, "/", (Route<dynamic> route) => false);
+                                        Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            "/",
+                                            (Route<dynamic> route) => false);
                                       },
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                                    padding: const EdgeInsets.fromLTRB(
+                                        15, 10, 15, 10),
                                     // ignore: deprecated_member_use
                                     child: FlatButton(
                                       child: Text("No"),
@@ -254,10 +334,12 @@ class _SideDrawerState extends State<SideDrawer> {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: Text("Logout Error"),
-                              content: Text("Some error occurred!\nYou are still Logged In"),
+                              content: Text(
+                                  "Some error occurred!\nYou are still Logged In"),
                               actions: [
                                 Padding(
-                                  padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(15, 10, 15, 10),
                                   // ignore: deprecated_member_use
                                   child: FlatButton(
                                     child: Text("Try Again"),

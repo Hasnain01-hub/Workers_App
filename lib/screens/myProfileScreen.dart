@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -8,8 +10,37 @@ class MyProfileScreen extends StatefulWidget {
   _MyProfileScreenState createState() => _MyProfileScreenState();
 }
 
+
 class _MyProfileScreenState extends State<MyProfileScreen> {
   @override
+  var setdata;
+  void initState() {
+  
+    final CollectionReference users =
+    FirebaseFirestore.instance.collection('Users');
+    users.doc(user1.email).get().then(
+
+            (DocumentSnapshot documentSnapshot) async {
+          final newPet = (documentSnapshot.data() as Map<String,
+              dynamic>);
+          print(newPet["isWorker"]);
+          setState(() {
+            
+          setdata = newPet["isWorker"];
+          });
+          // if (newPet["status"]=="free") {
+          //   isSelected = [true, false];
+          // } else {
+          //   isSelected = [false, true];
+          //   // Fluttertoast.showToast(msg: "Sign in successful!");
+          // }
+
+            });
+    super.initState();
+  }
+  @override
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+  get user1 => _auth.currentUser;
   Widget build(BuildContext context) {
     final user = Provider.of<FirebaseAuthService>(context).currentUser();
     final authUser = Provider.of<FirebaseAuthService>(context).getCurrentUser();
@@ -105,6 +136,25 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       ),
                     ),
                   ),
+                  SizedBox(height: 10.0),
+                 setdata==true ?  Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius. circular(20),
+                    ),
+                    margin: EdgeInsets.symmetric(horizontal: 15),
+                    color: Colors.white60,
+                    child: ListTile(
+                      leading: FaIcon(
+                        FontAwesomeIcons.userTie,
+                        color:Theme.of(context).primaryColor ,
+                      ),
+                      title: Text(
+                        "Option for Free/busy",
+                        style: TextStyle(fontSize: 20.0),
+                      ),
+                    ),
+                  ) :SizedBox(),
+
                   SizedBox(height: 50.0),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.8,

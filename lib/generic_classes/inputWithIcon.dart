@@ -9,6 +9,7 @@ class InputWithIcon extends StatefulWidget {
   final String? Function(String?)? validateFunc;
   final Function(String)? onChange;
   final bool? obscure;
+  final int? maxLength;
   final TextInputType? keyboardType;
   final String? initialValue;
   final int? maxLines;
@@ -20,6 +21,7 @@ class InputWithIcon extends StatefulWidget {
     required this.myController,
     required this.onChange,
     this.obscure,
+    this.maxLength,
     this.keyboardType,
     this.validateFunc,
     this.initialValue,
@@ -63,6 +65,7 @@ class _InputWithIconState extends State<InputWithIcon> {
                 ),
                 minLines: 1,//Normal textInputField will be displayed
                 maxLines: widget.maxLines ?? 1,
+                maxLength:widget.maxLength,
                 style: widget.textStyle,
                 autocorrect: false,
                 controller: widget.myController,
