@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, prefer_const_constructors, curly_braces_in_flow_control_structures, avoid_unnecessary_containers, use_full_hex_values_for_flutter_colors
+
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
