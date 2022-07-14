@@ -14,8 +14,9 @@ class Category {
   static List<Category> categoryList = <Category>[
     Category(
       imagePath: 'assets/images/plumber.png',
-      title: "Plumber",
+      title: "plumber",
     ),
+    
     Category(
       imagePath: 'assets/images/electrician.png',
       title: 'Electrician',

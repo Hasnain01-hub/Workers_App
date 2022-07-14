@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, file_names, prefer_const_literals_to_create_immutables, avoid_unnecessary_containers, deprecated_member_use, sized_box_for_whitespace
 
+import 'package:new_workers_app/generic_classes/data.dart';
 import 'package:new_workers_app/models/category.dart';
 import 'package:flutter/material.dart';
 
@@ -56,11 +57,11 @@ class _CategoryListViewState extends State<CategoryListView>
                       ? 10
                       : Category.categoryList.length;
                   final Animation<double> animation =
-                  Tween<double>(begin: 0.0, end: 1.0).animate(
-                      CurvedAnimation(
-                          parent: animationController!,
-                          curve: Interval((1 / count) * index, 1.0,
-                              curve: Curves.fastOutSlowIn)));
+                      Tween<double>(begin: 0.0, end: 1.0).animate(
+                          CurvedAnimation(
+                              parent: animationController!,
+                              curve: Interval((1 / count) * index, 1.0,
+                                  curve: Curves.fastOutSlowIn)));
                   animationController?.forward();
 
                   return CategoryView(
@@ -82,10 +83,10 @@ class _CategoryListViewState extends State<CategoryListView>
 class CategoryView extends StatelessWidget {
   const CategoryView(
       {Key? key,
-        this.category,
-        this.animationController,
-        this.animation,
-        this.callback})
+      this.category,
+      this.animationController,
+      this.animation,
+      this.callback})
       : super(key: key);
 
   final VoidCallback? callback;
@@ -116,29 +117,35 @@ class CategoryView extends StatelessWidget {
                             top: 44, bottom: 24, left: 16),
                         child: Row(
                           children: <Widget>[
-                            ClipRRect(
-                              borderRadius:
-                              const BorderRadius.all(Radius.circular(16.0)),
-                              child: AspectRatio(
-                                  aspectRatio: 1.0,
-                                  child: Image.asset(category!.imagePath)),
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>  example(type:category!.title)),
+                                );
+                              },
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(16.0)),
+                                child: AspectRatio(
+                                    aspectRatio: 1.0,
+                                    child: Image.asset(category!.imagePath)),
+                              ),
                             ),
-
                           ],
                         ),
                       ),
                     ),
                     Padding(
-                      padding:
-                      const EdgeInsets.only(top: 10,left: 20),
+                      padding: const EdgeInsets.only(top: 10, left: 20),
                       child: Text(
                         category!.title,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
                           letterSpacing: 0.27,
-                          color:
-                          Theme.of(context).primaryColor,
+                          color: Theme.of(context).primaryColor,
                         ),
                       ),
                     ),
