@@ -15,19 +15,12 @@ class example extends StatefulWidget {
 }
 
 class _exampleState extends State<example> {
-  @override
-  void initState() {
-    loaddata();
-    super.initState();
-  }
-
   List<Map<String, dynamic>> data = [];
   void dispose() {
     data.clear();
     super.dispose();
   }
 
-  var res;
   bool? setvalue;
   bool? remove;
   var usesr;
@@ -38,9 +31,8 @@ class _exampleState extends State<example> {
         .get()
         .then((docs) async {
       for (var doc in docs.docs) {
-        res = doc.data();
+        data.add(doc.data());
       }
-      data.add(res);
       print(data);
     });
     return data;
@@ -68,9 +60,6 @@ class _exampleState extends State<example> {
               child: Column(
                 children: List.generate(list!.length, (index) {
                   List item = list[index]["useremail"];
-                  
-                    remove = item.remove(usesr);
-                  
                   item.contains(usesr) ? setvalue = true : setvalue = false;
                   return widget.type == list[index]["work"]
                       ? Container(
@@ -134,62 +123,47 @@ class _exampleState extends State<example> {
                                     ),
                                   ),
                                   SizedBox(height: 10),
-                                  Row(
+                                list[index]["email"]!=usesr?  Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       OutlinedButton(
                                         onPressed: () async {
-                                          if (setvalue == false) {
-                                            List users = [
-                                              usesr,
-                                            ];
-                                            
-
+                                          if (!item.contains(usesr)) {
+                                          item.add(usesr);
                                             await FirebaseFirestore.instance
                                                 .collection('Worker')
                                                 .doc(list[index]["email"]
                                                     .toString())
-                                                .update({"useremail": users});
-                                                setState(() {
+                                                .update({"useremail": item});
+                                            setState(() {
                                               setvalue = true;
                                             });
                                           } else {}
                                         },
-                                        child: setvalue == false
-                                            ? Text(
+                                        child:  Text(
                                                 'Request',
                                                 style: TextStyle(
                                                     color: Colors.black87,
                                                     fontWeight:
                                                         FontWeight.bold),
                                               )
-                                            : Text(
-                                                'Requested',
-                                                style: TextStyle(
-                                                    color: Colors.black87,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
+                                            
                                       ),
-                                      SizedBox(width: 3),
+                                      SizedBox(width: 6),
                                       setvalue == true
                                           ? OutlinedButton(
                                               onPressed: () async {
+                                                setState(() {
+                                                  remove = item.remove(usesr);
+                                                });
                                                 if (remove == true) {
-                                                  List users = [
-                                                    item,
-                                                  ];
-                                                  setState(() {
-                                                    setvalue = false;
-                                                  });
-
                                                   await FirebaseFirestore
                                                       .instance
                                                       .collection('Worker')
                                                       .doc(list[index]["email"]
                                                           .toString())
                                                       .update(
-                                                          {"useremail": users});
+                                                          {"useremail": item});
                                                 } else {}
                                               },
                                               child: Text(
@@ -201,7 +175,7 @@ class _exampleState extends State<example> {
                                               ))
                                           : SizedBox(),
                                     ],
-                                  ),
+                                  ):SizedBox(),
                                   // Text(
                                   //   data[position]['email'].toString(),
                                   //   style: TextStyle(
